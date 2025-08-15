@@ -12,8 +12,8 @@ body {
 }
 
 .app-container {
-  width: 90%;
-  max-width: 1000px;
+  width: 95%;
+  max-width: 1200px;
   margin: 20px auto;
   background: white;
   padding: 30px;
@@ -36,8 +36,11 @@ h2 {
   padding-bottom: 10px;
 }
 
-/* Formulario */
+/* Formulario - Diseño en 2 columnas */
 .task-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   background: #f9f9f9;
   padding: 25px;
   border-radius: 8px;
@@ -46,7 +49,11 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 0; /* Ahora lo controla grid gap */
+}
+
+.form-group.description {
+  grid-column: span 2;
 }
 
 .form-group label {
@@ -65,6 +72,7 @@ h2 {
   border-radius: 6px;
   font-size: 16px;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -81,6 +89,13 @@ h2 {
 }
 
 /* Botones */
+.form-actions {
+  grid-column: span 2;
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
 .submit-btn {
   background: #4CAF50;
   color: white;
@@ -91,6 +106,7 @@ h2 {
   font-size: 16px;
   font-weight: bold;
   transition: background 0.3s, transform 0.2s;
+  flex: 1;
 }
 
 .submit-btn:hover {
@@ -108,6 +124,7 @@ h2 {
   font-size: 16px;
   font-weight: bold;
   transition: background 0.3s, transform 0.2s;
+  flex: 1;
 }
 
 .cancel-btn:hover {
@@ -115,7 +132,7 @@ h2 {
   transform: translateY(-1px);
 }
 
-/* Lista de tareas */
+/* Lista de tareas - Diseño en grid */
 .tasks-container {
   margin-top: 30px;
 }
@@ -124,6 +141,9 @@ h2 {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
 }
 
 .task-item {
@@ -131,7 +151,6 @@ h2 {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 15px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -353,6 +372,14 @@ h2 {
     padding: 20px;
   }
   
+  .task-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-group.description {
+    grid-column: span 1;
+  }
+  
   .task-header {
     flex-direction: column;
     align-items: flex-start;
@@ -366,6 +393,10 @@ h2 {
   .task-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+  
+  .task-list {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -385,5 +416,16 @@ h2 {
   
   .submit-btn, .cancel-btn {
     width: 100%;
+  }
+}
+
+/* Para pantallas muy grandes */
+@media (min-width: 1400px) {
+  .app-container {
+    max-width: 1400px;
+  }
+  
+  .task-list {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   }
 }
