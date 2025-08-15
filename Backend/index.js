@@ -20,6 +20,17 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: false
 });
 
+const corsOptions = {
+  origin: [
+    'https://pruebaglocation.onrender.com', // URL de tu frontend en Render
+    'http://localhost:5173' // Para desarrollo local
+  ],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
+
 // TABLA TASK
 const Task = sequelize.define( 'Task',{
   id: {
