@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_URL = 'http://localhost:3001/tasks'; // Cambié a /tasks para coincidir con tu backend
-//const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/tasks';
-
+//const API_URL = 'http://localhost:3001/tasks'; // Cambié a /tasks para coincidir con tu backend
+//URL para conectar a render y a local
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/tasks';
 
 function App() {
   const [newTask, setNewTask] = useState({
