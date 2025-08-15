@@ -5,127 +5,237 @@ body {
   margin: 0;
   padding: 20px;
   background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .app-container {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
-  color: #333;
+h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2rem;
+}
+
+h2 {
+  color: #34495e;
+  margin-top: 0;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
 }
 
 /* Formulario */
 .task-form {
   background: #f9f9f9;
-  padding: 20px;
+  padding: 25px;
   border-radius: 8px;
   margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: bold;
+  color: #4a5568;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 .form-group textarea {
-  min-height: 80px;
+  min-height: 100px;
+  resize: vertical;
 }
 
+/* Botones */
 .submit-btn {
   background: #4CAF50;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .submit-btn:hover {
   background: #45a049;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
 }
 
 /* Lista de tareas */
 .tasks-container {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .task-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .task-item {
   background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 15px;
-  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.task-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.2rem;
+  flex-grow: 1;
+}
+
+.task-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .task-description {
-  color: #666;
-  margin-bottom: 10px;
+  color: #4a5568;
+  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
 .task-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Filtros */
+.filters {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.filters select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  max-width: 300px;
 }
 
 /* Estados y prioridades */
 .status-select {
-  padding: 5px;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
 }
 
 .status-pendiente {
-  background: #fff3cd;
+  background-color: #fff3cd;
   color: #856404;
+  border-left: 4px solid #ffc107;
 }
 
 .status-en_progreso {
-  background: #cce5ff;
+  background-color: #cce5ff;
   color: #004085;
+  border-left: 4px solid #2196F3;
 }
 
 .status-completada {
-  background: #d4edda;
+  background-color: #d4edda;
   color: #155724;
+  border-left: 4px solid #4CAF50;
 }
 
 .priority {
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .priority-1 {
@@ -143,23 +253,137 @@ h1, h2 {
   color: #0c5460;
 }
 
-/* Botones */
-.delete-btn {
-  background: #dc3545;
+/* Botones de acción */
+.task-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.edit-btn {
+  background: #3498db;
   color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 8px 15px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.edit-btn:hover {
+  background: #2980b9;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
 }
 
 .delete-btn:hover {
-  background: #c82333;
+  background: #c0392b;
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #edf2f7;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+/* Fecha límite */
+.due-date {
+  font-size: 0.9rem;
+  color: #718096;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.due-date::before {
+  content: "📅";
 }
 
 /* Loading */
 .loading {
   text-align: center;
-  padding: 20px;
+  padding: 40px;
   font-size: 18px;
+  color: #4a5568;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-container {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .task-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .task-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  .app-container {
+    padding: 15px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .submit-btn, .cancel-btn {
+    width: 100%;
+  }
 }

@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-//const API_URL = 'http://localhost:3001/tasks'; // Cambié a /tasks para coincidir con tu backend
-//URL para conectar a render y a local
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
- API_BASE_URL = `${API_BASE_URL}/tasks`;  
+const API_URL = 'http://localhost:3001/tasks';
 
 function App() {
   const [newTask, setNewTask] = useState({
@@ -16,13 +13,30 @@ function App() {
   });
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingTask, setEditingTask] = useState(null);
+  const [filters, setFilters] = useState({
+    status: '',
+    page: 1,
+    limit: 5
+  });
+  const [totalTasks, setTotalTasks] = useState(0);
 
-  // Obtener todas las tareas
+  // Obtener todas las tareas con filtros
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_URL);
+      const response = await axios.get(API_URL, {
+        params: {
+          status: filters.status,
+          page: filters.page,
+          limit: filters.limit
+        }
+      });
       setTasks(response.data);
+      
+      // En una API real, deberías recibir el total desde el backend
+      const countResponse = await axios.get(API_URL);
+      setTotalTasks(countResponse.data.length);
     } catch (error) {
       console.error('Error al obtener tareas:', error);
     } finally {
@@ -41,7 +55,7 @@ function App() {
         status: 'pendiente',
         priority: 3
       });
-      fetchTasks(); // Actualizar la lista
+      fetchTasks();
     } catch (error) {
       console.error('Error al crear tarea:', error);
     }
@@ -49,10 +63,10 @@ function App() {
 
   // Eliminar tarea
   const handleDeleteTask = async (id) => {
-    if(true){
+    if (window.confirm('¿Estás seguro de eliminar esta tarea?')) {
       try {
         await axios.delete(`${API_URL}/${id}`);
-        fetchTasks(); // Actualizar la lista
+        fetchTasks();
       } catch (error) {
         console.error('Error al eliminar:', error);
         alert('Error al eliminar la tarea');
@@ -70,10 +84,55 @@ function App() {
     }
   };
 
-  // Cargar tareas al inicio
+  // Editar tarea
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setNewTask({
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority
+    });
+  };
+
+  // Actualizar tarea editada
+  const handleUpdateTask = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${API_URL}/${editingTask.id}`, newTask);
+      setEditingTask(null);
+      setNewTask({
+        title: '',
+        description: '',
+        status: 'pendiente',
+        priority: 3
+      });
+      fetchTasks();
+    } catch (error) {
+      console.error('Error al actualizar tarea:', error);
+    }
+  };
+
+  // Cancelar edición
+  const cancelEdit = () => {
+    setEditingTask(null);
+    setNewTask({
+      title: '',
+      description: '',
+      status: 'pendiente',
+      priority: 3
+    });
+  };
+
+  // Cambiar página
+  const handlePageChange = (newPage) => {
+    setFilters({ ...filters, page: newPage });
+  };
+
+  // Cargar tareas al inicio y cuando cambian los filtros
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [filters.status, filters.page]);
 
   if (loading) return <div className="loading">Cargando tareas...</div>;
 
@@ -81,9 +140,23 @@ function App() {
     <div className="app-container">
       <h1>Gestor de Tareas</h1>
       
-      {/* Formulario para crear tareas */}
-      <form onSubmit={handleCreateTask} className="task-form">
-        <h2>Nueva Tarea</h2>
+      {/* Filtros */}
+      <div className="filters">
+        <h2>Filtrar Tareas</h2>
+        <select
+          value={filters.status}
+          onChange={(e) => setFilters({ ...filters, status: e.target.value, page: 1 })}
+        >
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="en_progreso">En Progreso</option>
+          <option value="completada">Completada</option>
+        </select>
+      </div>
+
+      {/* Formulario para crear/editar tareas */}
+      <form onSubmit={editingTask ? handleUpdateTask : handleCreateTask} className="task-form">
+        <h2>{editingTask ? 'Editar Tarea' : 'Nueva Tarea'}</h2>
         <div className="form-group">
           <label>Título*</label>
           <input
@@ -114,7 +187,28 @@ function App() {
           </select>
         </div>
         
-        <button type="submit" className="submit-btn">Crear Tarea</button>
+        <div className="form-group">
+          <label>Estado</label>
+          <select
+            value={newTask.status}
+            onChange={(e) => setNewTask({...newTask, status: e.target.value})}
+          >
+            <option value="pendiente">Pendiente</option>
+            <option value="en_progreso">En Progreso</option>
+            <option value="completada">Completada</option>
+          </select>
+        </div>
+        
+        <div className="form-actions">
+          <button type="submit" className="submit-btn">
+            {editingTask ? 'Actualizar Tarea' : 'Crear Tarea'}
+          </button>
+          {editingTask && (
+            <button type="button" className="cancel-btn" onClick={cancelEdit}>
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
 
       {/* Listado de tareas */}
@@ -123,37 +217,78 @@ function App() {
         {tasks.length === 0 ? (
           <p>No hay tareas registradas</p>
         ) : (
-          <ul className="task-list">
-            {tasks.map((task) => (
-              <li key={task.id} className="task-item">
-                <div className="task-header">
-                  <h3>{task.title}</h3>
-                  <span className={`priority priority-${task.priority}`}>
-                    Prioridad: {['Alta', 'Media', 'Baja'][task.priority - 1]}
-                  </span>
-                </div>
-                
-                {task.description && <p className="task-description">{task.description}</p>}
-                
-                <div className="task-footer">
-                  <select
-                    value={task.status}
-                    onChange={(e) => handleUpdateStatus(task.id, e.target.value)}>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="en_progreso">En Progreso</option>
-                    <option value="completada">Completada</option>
-                  </select>
+          <>
+            <ul className="task-list">
+              {tasks.map((task) => (
+                <li key={task.id} className={`task-item status-${task.status}`}>
+                  <div className="task-header">
+                    <h3>{task.title}</h3>
+                    <div className="task-meta">
+                      <span className={`priority priority-${task.priority}`}>
+                        Prioridad: {['Alta', 'Media', 'Baja'][task.priority - 1]}
+                      </span>
+                      <span className={`status-badge status-${task.status}`}>
+                        {task.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                  </div>
                   
-                  <button 
-                      onClick={() => handleDeleteTask(task.id)}
-                      className="delete-btn"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  {task.description && <p className="task-description">{task.description}</p>}
+                  
+                  {task.due_date && (
+                    <p className="due-date">
+                      Fecha límite: {new Date(task.due_date).toLocaleDateString()}
+                    </p>
+                  )}
+                  
+                  <div className="task-footer">
+                    <select
+                      value={task.status}
+                      onChange={(e) => handleUpdateStatus(task.id, e.target.value)}
+                    >
+                      <option value="pendiente">Pendiente</option>
+                      <option value="en_progreso">En Progreso</option>
+                      <option value="completada">Completada</option>
+                    </select>
+                    
+                    <div className="task-actions">
+                      <button 
+                        onClick={() => handleEditTask(task)}
+                        className="edit-btn"
+                      >
+                        Editar
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteTask(task.id)}
+                        className="delete-btn"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Paginación */}
+            <div className="pagination">
+              <button
+                onClick={() => handlePageChange(filters.page - 1)}
+                disabled={filters.page === 1}
+              >
+                Anterior
+              </button>
+              
+              <span>Página {filters.page} de {Math.ceil(totalTasks / filters.limit)}</span>
+              
+              <button
+                onClick={() => handlePageChange(filters.page + 1)}
+                disabled={filters.page >= Math.ceil(totalTasks / filters.limit)}
+              >
+                Siguiente
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

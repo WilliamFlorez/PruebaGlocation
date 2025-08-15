@@ -21,19 +21,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 });
 
 
-const corsOptions = {
-  origin: [
-    'https://pruebaglocation.onrender.com',
-    'http://localhost:5173'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // 
-
 
 // TABLA TASK
 const Task = sequelize.define( 'Task',{
