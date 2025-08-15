@@ -3,7 +3,7 @@ import './App.css'
 import axios from "axios"
 import { useEffect } from 'react'
 
-const local_url = 'localhost:3001/task'
+const baseUrl = 'http://localhost:3001/task'; 
 //const url =''
 
 
@@ -24,7 +24,7 @@ const TextBar = ({mensajeInput,HandleChange,Publicar }) => {
 
 function App() {
   const [texto, setTexto] = useState('')
-  const [task, setTast] = useState([])
+  const [task, setTask] = useState([])
 
           const HandleChange =(event)=>{
             console.log("TEXT-BAR:: "+event.target.value)
@@ -34,7 +34,7 @@ function App() {
           useEffect(()=>{
               axios.get(baseUrl).then(
                 response => {
-                  setTast(response.data)
+                  setTask(response.data)
                 }
               )
           })

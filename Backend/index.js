@@ -1,6 +1,6 @@
 const express = require('express') // se instala express
 const cors = require('cors')//se instala cors
-const { Sequelize } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize');
 const app = express()
 
 app.use(express.json()) //Para envio de informacion por body y en lenguaje JSON
@@ -75,33 +75,34 @@ const Task = sequelize.define( 'Task',{
 
 
 
-
+//###################### END POINTS ##############################
 
 //Crear tarea (campos: título,
 //                     descripción,
 //                     estado = pendiente, en_progreso, completada)
-app.post( "/task" , (request,response) =>{
-   task_title = request.body.titulo
-   task_description = request.body.dexcripcion
-   task_state = request.body.estado
-   task_due_date   = request.body.due_date  
-   task_created_at  = request.body.created_at 
-   task_updated_at   = request.body.updated_at  
-   
-   if(task_text == null){
-        "No se recivio texto"
-   }else{
-        const estructura ={
-            title : task_title,
-            descripcion : task_description,
-            status : task_state
-        }
-   }
+app.post( "/task" , async (request,response) =>{
+   try {
+    const task = await Task.create({
+      title: request.body.titulo,
+      description: request.body.descripcion,
+      status: request.body.estado || 'pendiente',
+      priority: request.body.priority || 3,
+      due_date: request.body.due_date
+    });
+    response.status(201).json(task);
+  } catch (error) {
+    response.status(400).json({ error: error.message });
+  }
 } )
 
 // Listar todas las tareas (paginación y filtro por estado)
-app.get('/task', (request,response)=>{ 
-
+app.get('/task', async (request, response) => {
+  try {
+    const tasks = await Task.findAll();
+    response.json(tasks);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
 })
 
 app.get('/task/:id', (request,response)=>{
